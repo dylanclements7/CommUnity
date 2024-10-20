@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" type="text/css" href=hack-styles.css>
+    <script src = "hack3.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+</head>
+<template id = "post-template" class = "post-element">
+    <div class = "post">
+        <div class = "post-exit"> - </div>
+        <div class = "closed-post">
+            <div class = "post-text">
+                <ul> 
+                    <li class = "post-header-text"><strong>test-post</strong> <li>
+                    <div class = "seperator"></div>
+                    <li class = "post-summary-text"> this is a test post, it is extremely cool</li> 
+                </ul>
+            
+            </div>
+            <div class = "post-image-box">
+                <iframe class = "map"
+                    width="100"
+                    height="100"
+                    style="border:0"
+                    loading="lazy"
+                    allowfullscreen
+                    referrerpolicy="no-referrer-when-downgrade"
+                    src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAgKNPSYplo6yeWjU312bEI-7gYk1Tieu8
+                        &q=Space+Needle,Seattle+WA">
+                </iframe>
+            </div>
+        </div>
+        
+        <div class = "expanded-post">
+            <div class = "post-description">
+                <p class = "post-description-text">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                </p>
+            </div>
+            <div class = "bottom-bar">
+                <div class = "post-button-box"> 
+                    <a class = "email-link" href="mailto: name@email.com"><button class = "post-button">CONTACT</button></a>
+                </div>
+            </div>
+            
+        </div>
+    
+    </div>
+</template>
+
+
+<body>
+    <div id = "header">
+        <ul id = "tabs"> 
+            <li class= "tab" id = "tab1" data-tab-target = "post-maker-page" > Make a Post</li>
+            <li class = "tab active" data-tab-target = "project-finder"> Find a Project</li>
+        </ul>
+        <div id = "logo-area">
+            <p id = "logo-text">comm<span id = "uni">Uni</span>ty</p>
+        </div>
+    
+    </div>
+<div class = "page" id = "post-maker-page"> 
+    <div id = "post-maker-form">
+
+    
+        <form id = "post-form" action="">
+            <h2>Make A Post</h2>
+            <div class="input-box">
+                <textarea rows="1" cols="50" placeholder="Title" required></textarea>
+                <i class='bx bxs-user'></i>
+            </div>
+            <div class="input-box">
+                <textarea rows="1" cols="50" placeholder="Email" required></textarea>
+                <i class='bx bxs-envelope'></i>
+            </div>
+            <div class="input-box">
+                <textarea rows="1" cols="50" placeholder="Address" required></textarea>
+                <i class='bx bxs-book'></i> 
+            </div>
+            <div class="input-box">
+                <textarea rows="4" cols="50" placeholder="Description" required></textarea>
+                <i class='bx bxs-pencil'></i>
+            </div>
+            <button  type="submit" id="post-maker-button">Post</button>
+        </form>
+    </div>
+</div>
+
+
+<div class = "page active" id ="project-finder">
+    <div id = "page-content">
+        <div id = "selection-area">
+        <div id = "project-finder-control">
+            <div id = "post-finder-content">
+                <h2>Describe Your Skills</h2>
+                <form id="skills-form">
+                    <textarea id="skills" name="skills" rows="4" cols="50" placeholder="Enter your skills here..."></textarea><br>
+                    <button id = "post-finder-button" type="submit">Find Projects</button>
+                </form>
+            </div>
+        </div>
+        <div class="filter-bar">
+            <h3>Select Filters:</h3>
+            <form action="/submit-filters" method="POST" class="filter-group" id = "a-form">
+                <label>
+                    <input type="checkbox" name="filters" value="Technical"> Technical
+                </label>
+                <label>
+                    <input type="checkbox" name="filters" value="Design & Creative"> Design & Creative
+                </label>
+                <label>
+                    <input type="checkbox" name="filters" value="Translation & Language"> Translation & Language
+                </label>
+                <label>
+                    <input type="checkbox" name="filters" value="Marketing & Communications"> Marketing & Communications
+                </label>
+                <label>
+                    <input type="checkbox" name="filters" value="Fundraising & Development"> Fundraising & Development
+                </label>
+                <label>
+                    <input type="checkbox" name="filters" value="Event Planning & Coordination"> Event Planning & Coordination
+                </label>
+                <label>
+                    <input type="checkbox" name="filters" value="Business & Management"> Business & Management
+                </label>
+                <label>
+                    <input type="checkbox" name="filters" value="Education & Training"> Education & Training
+                </label>
+                <label>
+                    <input type="checkbox" name="filters" value="Photography & Video"> Photography & Video
+                </label>
+                <label>
+                    <input type="checkbox" name="filters" value="Health & Wellness"> Health & Wellness
+                </label>
+                <label>
+                    <input type="checkbox" name="filters" value="Research & Analysis"> Research & Analysis
+                </label>
+                <label>
+                    <input type="checkbox" name="filters" value="Image & Video Editing"> Image & Video Editing
+                </label>
+        
+            </form>
+            <button class="submit-btn">Apply Filters</button>
+        </div>
+        </div>
+        <div id = "post-feed">
+            <div id = "feed-header-box">
+                <h2 id = "feed-header">Projects</h2>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
