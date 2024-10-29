@@ -1,42 +1,5 @@
 // OpenAI API setup
-const API_KEY = "Key";
-const ORG_ID = "Key";
-const PROJ_ID = "Key";
-
-// IndexedDB utility functions
-function openDB() {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open('posts', 1);
-        request.onupgradeneeded = event => {
-            const db = event.target.result;
-            const store = db.createObjectStore('posts', { keyPath: 'id', autoIncrement: true });
-            store.createIndex('tags', 'tags', { unique: false });
-        };
-        request.onsuccess = event => resolve(event.target.result);
-        request.onerror = event => reject(event.target.error);
-    });
-}
-
-function addPostToDB(post) {
-    return openDB().then(db => {
-        const transaction = db.transaction('posts', 'readwrite');
-        const store = transaction.objectStore('posts');
-        store.add(post);
-        return transaction.complete;
-    });
-}
-
-function getAllPostsFromDB() {
-    return openDB().then(db => {
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction('posts', 'readonly');
-            const store = transaction.objectStore('posts');
-            const request = store.getAll();
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
-    });
-}
+const API_KEY = "API KEY"
 
 // OpenAI API function for generating tags
 async function generateTags(description) {
@@ -90,38 +53,18 @@ async function generateSummary(description) {
     return data.choices[0].message.content;
 }
 
-// Function to add a post
-async function addPost(title, roleDescription, streetAddress, emailAddress) {
-    const tags = await generateTags(roleDescription);
-    const summary = await generateSummary(roleDescription);
-    const post = {
-        title,
-        roleDescription,
-        tags,
-        streetAddress,
-        emailAddress,
-        summary
-    };
-    await addPostToDB(post);
-
-
-}
-
 // Function to find posts with common tags
 async function findPostsWithCommonTags(description) {
-    const API_URL = 'http://localhost:3000/posts'
+    const API_URL = 'http://localhost:9000/posts'
     const inputTags = new Set(JSON.parse(await generateTags(description)));
     try {
         const response = await fetch(API_URL);
         const posts = await response.json();
 
     const allPosts = posts;
-    console.log("all-posts")
-    console.log(allPosts)
+
     const matchingPosts = allPosts.filter(post => {
         const postTags = new Set(JSON.parse(post.tags));
-        console.log("pOST TAGS")
-        console.log(post.tags)
         const commonTags = [...inputTags].filter(tag => postTags.has(tag));
         return commonTags.length > 0;
     });
@@ -139,40 +82,34 @@ async function findPostsWithCommonTags(description) {
 
 } 
 
-async function filter(tags) {
-    const API_URL = 'http://localhost:3000/posts';
+async function filter(tags){
+    const API_URL = 'http://localhost:9000/posts'
+    const nTags = new Set(tags);
     try {
         const response = await fetch(API_URL);
-        const posts = await response.json();
-
-        const allPosts = posts;
-        
-        const matchingPosts = allPosts.filter(post => {
-            const postTags = new Set(tags);
-            const commonTags = [...inputTags].filter(tag => postTags.has(tag));
+        const posts= await response.json();
+        console.log(JSON.parse(posts[0].tags))
+        const matchingPosts = posts.filter(post => {
+            const postTags = new Set(JSON.parse(post.tags));
+            const commonTags = [...tags].filter(tag => postTags.has(tag));
             return commonTags.length > 0;
         });
-        
-        return matchingPosts.sort((a, b) => {
-            const aCommonTags = [...inputTags].filter(tag => new Set(JSON.parse(a.tags)).has(tag)).length;
-            const bCommonTags = [...inputTags].filter(tag => new Set(JSON.parse(b.tags)).has(tag)).length;
+
+        const rv = matchingPosts.sort((a, b) => {
+            const aCommonTags = [...tags].filter(tag => new Set(JSON.parse(a.tags)).has(tag)).length;
+            const bCommonTags = [...tags].filter(tag => new Set(JSON.parse(b.tags)).has(tag)).length;
             return bCommonTags - aCommonTags;
+    
         });
-    } catch (error) {
-        console.error('Error filtering posts:', error);
-        return []; // Return an empty array in case of an error
+
+        console.log(rv);
+        return rv;
+    
+
+    }catch(error){
+        console.error(error)
     }
 }
-
-
-// Example usage:
-// create a new post
-//addPost('Volunteer Web Developer', 'Looking for a web developer to help...', '123 Main St', 'volunteer@example.com');
-
-// find posts with common tags
-//findPostsWithCommonTags('Looking for a developer experienced in JavaScript and React...')
-
-
 
 function createPostExpansion(){ 
     const closedPosts = document.querySelectorAll(".closed-post")
@@ -249,16 +186,13 @@ async function createPostFormSubmission(){
         const address = this.querySelectorAll('textarea')[2].value; //address
         const description = this.querySelectorAll('textarea')[3].value; // Description
         let form = document.querySelector("#post-form")
-            console.log("form")
-            console.log(form)
-    
     
             form.querySelectorAll('.input-box').forEach(ta => {
                 textarea = ta.querySelector('textarea')
                 textarea.value = ''; // Clear the value
             })
 
-        const API_URL = 'http://localhost:3000/posts';
+        const API_URL = 'http://localhost:9000/posts';
 
 
             const postData = {
@@ -336,26 +270,19 @@ function makePost(title,description,email,summary,address){
 }
 
 async function postAll(){ 
-    console.log("3grfedvs")
-    const API_URL = 'http://localhost:3000/posts'
+    const API_URL = 'http://localhost:9000/posts'
     try {
         const response = await fetch(API_URL);
         const posts = await response.json();
-        console.log(posts)
         posts.reverse().forEach(post =>{
-            console.log("post")
-            console.log(post)
             makePost(post.title,post.roleDescription,post.emailAddress,post.summary,post.streetAddress)
         })
     }catch(error){
-        console.log(error)
     }
    
 }
 async function displayPosts(description){ 
         data = await findPostsWithCommonTags(description)
-        console.log("data:")
-        console.log(data)
         feed = document.querySelector("#post-feed")
         posts = feed.querySelectorAll(".post")
         posts.forEach(pt => {
@@ -363,27 +290,20 @@ async function displayPosts(description){
         })
 
         data.forEach(post =>{
-            console.log("post")
-            console.log(post)
             makePost(post.title,post.roleDescription,post.emailAddress,post.summary,post.streetAddress)
         })
     }
 
 async function displayPostsFromList(list){ 
     data = await list
-    console.log("data:")
-    console.log(data)
+    console.log("LIST,",list)
     feed = document.querySelector("#post-feed")
     posts = feed.querySelectorAll(".post")
     posts.forEach(pt => {
         pt.remove()
     })
-    console.log("")
-    console.log(data)
 
     data.forEach(post =>{
-        console.log("post")
-        console.log(post)
         makePost(post.title,post.roleDescription,post.emailAddress,post.summary,post.streetAddress)
     })
         
@@ -394,10 +314,7 @@ function filterSetup() {
         const selectedFilters = Array.from(document.querySelectorAll('input[name="filters"]:checked'))
                                      .map(checkbox => checkbox.value);
         
-        // Log the selected filters
-        console.log(selectedFilters); // Added logging to see the selected filters
-        
-        await displayPosts(selectedFilters.toString())
+        await displayPostsFromList(filter(selectedFilters.toString()))
     });
 }
 
@@ -417,4 +334,3 @@ async function initiate(){
 
 // Call the function after the DOM content has loaded
 document.addEventListener('DOMContentLoaded', initiate);
-
